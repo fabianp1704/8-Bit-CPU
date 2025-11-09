@@ -345,7 +345,7 @@ module tb ();
 
     initial begin
 
-        $dumpfile("tb.vcd");
+        $dumpfile("test/tb.vcd");
         $dumpvars(0, tb);
 
         // test reset bhv
