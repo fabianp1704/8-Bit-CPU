@@ -86,4 +86,5 @@ module cpu_ctrl_fsm (
             end
         endcase
     end
+    wire _unused = &{z_i, c_i, v_i, n_i, 1'b0};
 endmodule

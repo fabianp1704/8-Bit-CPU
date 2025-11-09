@@ -121,4 +121,5 @@ module cpu_top (
     assign uio_out[2] = alu_v;
     assign uio_out[3] = alu_n;
 
+    wire _unused = &{in[7:6], uio_in, 1'b0};
 endmodule

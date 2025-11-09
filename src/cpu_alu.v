@@ -70,5 +70,5 @@ module cpu_alu (
         z_o = result[7:0] == 8'b00000000; // zero flag
         n_o = result[7];
     end
-
+    wire _unused = &{result_signed[6:0], 1'b0};
 endmodule
