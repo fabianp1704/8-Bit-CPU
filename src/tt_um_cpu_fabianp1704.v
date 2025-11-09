@@ -28,6 +28,6 @@ module tt_um_cpu_fabianp1704 (
     );
 
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, 1'b0};
+  wire _unused = &{ena, uio_in, ui_in[7:6], 1'b0};
 
 endmodule

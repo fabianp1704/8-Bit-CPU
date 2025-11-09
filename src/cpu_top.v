@@ -9,6 +9,7 @@ module cpu_top (
 );
 
     assign uio_oe = 8'b00001111;
+    assign uio_out[7:4] = 4'b0000;
 
 
     wire [7:0] reg_a;
