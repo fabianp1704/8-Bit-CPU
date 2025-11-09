@@ -1,0 +1,6 @@
+`define MUX_SELECT_REG_A 3'b000
+`define MUX_SELECT_REG_B 3'b001
+`define MUX_SELECT_ALU_Y 3'b010
+`define MUX_SELECT_OP 3'b011
+`define MUX_SELECT_PC 3'b100
+`define MUX_SELECT_NONE 3'b101

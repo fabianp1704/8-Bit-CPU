@@ -6,7 +6,16 @@ SIM ?= icarus
 WAVES ?= 1
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = project.v
+PROJECT_SOURCES = \
+    cpu_alu.v \
+    cpu_ctrl_fsm.v \
+    cpu_io_fsm.v \
+    cpu_mux.v \
+    cpu_pc.v \
+    cpu_regfile.v \
+    cpu_register.v \
+    cpu_top.v \
+    tt_um_cpu_fabianp1704.v
 
 ifneq ($(GATES),yes)
 
@@ -35,8 +44,8 @@ endif
 COMPILE_ARGS 		+= -I$(SRC_DIR)
 
 # Include the testbench sources:
-VERILOG_SOURCES += $(PWD)/tb.v
-TOPLEVEL = tb
+VERILOG_SOURCES += $(PWD)/tt_um_cpu_fabianp1704_tb.v
+TOPLEVEL = tt_um_cpu_fabianp1704_tb
 
 # List test modules to run, separated by commas and without the .py suffix:
 COCOTB_TEST_MODULES = test
