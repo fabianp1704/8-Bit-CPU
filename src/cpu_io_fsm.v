@@ -14,7 +14,7 @@ module cpu_io_fsm (
 
     output wire[7:0] reg_a_out,
     output wire[7:0] reg_b_out,
-    output wire[3:0] reg_op_out,
+    output wire[4:0] reg_op_out,
 
     output wire io_done_o,
     output reg write_a,
@@ -30,7 +30,7 @@ module cpu_io_fsm (
 
     wire [7:0] data_a;
     wire [7:0] data_b;
-    wire [3:0] data_op;
+    wire [4:0] data_op;
 
     reg [2:0] select_mux_fsm;
 
@@ -52,7 +52,7 @@ module cpu_io_fsm (
         .data_o(data_b)
     );
 
-    cpu_register #(.WIDTH(4)) reg_op (
+    cpu_register #(.WIDTH(5)) reg_op (
         .clk_i(clk_i),
         .rst_ni(rst_ni),
         .shift_i(state == `ST_LOAD_OP),
@@ -125,11 +125,11 @@ module cpu_io_fsm (
                     select_mux_fsm <= `MUX_SELECT_OP;
 
                     case (data_op)
-                        `OP_ADD, `OP_SUB, `OP_AND, `OP_OR, `OP_XOR: begin
+                        `OP_ADD, `OP_SUB, `OP_AND, `OP_OR, `OP_XOR, `OP_MAX, `OP_MIN: begin
                             write_a <= 1'b1; // A := reg_a_out
                             write_x <= 1'b1; // X := reg_b_out
                         end
-                        `OP_INC_REG_A, `OP_DEC_REG_A, `OP_SHL_A, `OP_SHR_A, `OP_PASS_A: begin
+                        `OP_INC_REG_A, `OP_DEC_REG_A, `OP_SHL_A, `OP_SHR_A, `OP_PASS_A, `OP_NOT_A, `OP_NEG_A, `OP_CLR_A, `OP_ABS_A: begin
                             write_a <= 1'b1;
                         end
                         `OP_PASS_B: begin
@@ -180,7 +180,7 @@ module cpu_io_fsm (
                 next_state = `ST_LOAD_OP;
             end
             `ST_LOAD_OP: begin
-                if (count == 4'd3) begin
+                if (count == 4'd4) begin
                     next_state = `ST_DONE_OP;
                 end
             end

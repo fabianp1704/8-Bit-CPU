@@ -11,8 +11,6 @@
 `include "cpu_regfile.v"
 `include "cpu_register.v"
 `include "cpu_top.v"
-`include "tt_um_cpu_fabianp1704.v"
-
 
 module tt_um_cpu_fabianp1704_tb ();
 
@@ -78,7 +76,7 @@ module tt_um_cpu_fabianp1704_tb ();
     task run_test;
         input [7:0] a_val;
         input [7:0] b_val;
-        input [3:0] op_val;
+        input [4:0] op_val;
         input [127:0] name;
         begin
             task_reset();
@@ -89,7 +87,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(a_val, 8); // a
             task_serial_shift(b_val, 8); // b
-            task_serial_shift(op_val, 4); // operation
+            task_serial_shift(op_val, 5); // operation
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -102,7 +100,7 @@ module tt_um_cpu_fabianp1704_tb ();
     task run_test_mux_manual;
         input [7:0] a_val;
         input [7:0] b_val;
-        input [3:0] op;
+        input [4:0] op;
         input [127:0] name; 
         begin
             task_reset();
@@ -113,7 +111,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(a_val, 8); // a
             task_serial_shift(b_val, 8); // b
-            task_serial_shift(op, 4); // operation
+            task_serial_shift(op, 5); // operation
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -162,7 +160,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(8'd10, 8);
             task_serial_shift(8'd5, 8);
-            task_serial_shift(`OP_ADD, 4);
+            task_serial_shift(`OP_ADD, 5);
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -174,7 +172,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(8'd10, 8);
             task_serial_shift(8'd5, 8);
-            task_serial_shift(`OP_SUB, 4);
+            task_serial_shift(`OP_SUB, 5);
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -186,7 +184,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(8'd6, 8);
             task_serial_shift(8'd3, 8);
-            task_serial_shift(`OP_XOR, 4);
+            task_serial_shift(`OP_XOR, 5);
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -205,7 +203,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(8'd100, 8);
             task_serial_shift(8'd50, 8);
-            task_serial_shift(`OP_ADD, 4);
+            task_serial_shift(`OP_ADD, 5);
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -271,7 +269,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(8'd12, 8);   // A = 12
             task_serial_shift(8'd34, 8);   // X = 34
-            task_serial_shift(`OP_PASS_A, 4); // pass a chosen because its a "neutral" operation
+            task_serial_shift(`OP_PASS_A, 5); // pass a chosen because its a "neutral" operation
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -281,7 +279,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(8'd12, 8);   // A = 12
             task_serial_shift(8'd34, 8);   // X = 34
-            task_serial_shift(`OP_PASS_B, 4);
+            task_serial_shift(`OP_PASS_B, 5);
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -306,7 +304,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(8'd12, 8);   // A
             task_serial_shift(8'd34, 8);   // X
-            task_serial_shift(`OP_MOVE_REG_XA, 4); // X := A
+            task_serial_shift(`OP_MOVE_REG_XA, 5); // X := A
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -325,7 +323,7 @@ module tt_um_cpu_fabianp1704_tb ();
             in_tb[0] = 1'b0;
             task_serial_shift(8'd77, 8);
             task_serial_shift(8'd0, 8);
-            task_serial_shift(`OP_PASS_A, 4);
+            task_serial_shift(`OP_PASS_A, 5);
             @(posedge clk_tb);
             @(posedge clk_tb);
             @(posedge clk_tb);
@@ -343,10 +341,58 @@ module tt_um_cpu_fabianp1704_tb ();
         end
     endtask
 
+        task run_test_pc_increment;
+        begin
+            $display("Test: Program Counter");
+
+            task_reset();
+
+            @(negedge clk_tb);
+            in_tb[0] = 1'b1;
+            @(posedge clk_tb);
+            in_tb[0] = 1'b0;
+
+            // operation 1
+            task_serial_shift(8'd5, 8);   // A
+            task_serial_shift(8'd3, 8);   // B
+            task_serial_shift(`OP_ADD, 5);
+            repeat(3) @(posedge clk_tb);
+
+            // operation 2
+            @(negedge clk_tb);
+            in_tb[0] = 1'b1;
+            @(posedge clk_tb);
+            in_tb[0] = 1'b0;
+            task_serial_shift(8'd10, 8);
+            task_serial_shift(8'd2, 8);
+            task_serial_shift(`OP_SUB, 5);
+            repeat(3) @(posedge clk_tb);
+
+            // operation 3
+            @(negedge clk_tb);
+            in_tb[0] = 1'b1;
+            @(posedge clk_tb);
+            in_tb[0] = 1'b0;
+            task_serial_shift(8'd1, 8);
+            task_serial_shift(8'd1, 8);
+            task_serial_shift(`OP_XOR, 5);
+            repeat(3) @(posedge clk_tb);
+
+            in_tb[5] = 1'b1;
+            in_tb[4:2] = `MUX_SELECT_PC;
+            #(2*CLK_PERIOD);
+
+            $display("Program Counter output = %0d (expected 3)", out_tb);
+
+            in_tb[5] = 1'b0;
+            #(3*CLK_PERIOD);
+        end
+    endtask
+
     initial begin
 
-        $dumpfile("test/tb.vcd");
-        $dumpvars(0, tb);
+        $dumpfile("tt_um_cpu_fabianp1704_tb.vcd");
+        $dumpvars(0, tt_um_cpu_fabianp1704_tb);
 
         // test reset bhv
 
@@ -355,35 +401,48 @@ module tt_um_cpu_fabianp1704_tb ();
 
 
         // test alu operations
-        run_test(8'd11, 8'd15, 4'd0, "Test 1: ADD");
-        run_test(8'd127, 8'd1, 4'd0, "Test 1.1: ADD (overflow)");
-        run_test(8'd255, 8'd1, 4'd0, "Test 1.2: ADD (carry)");
-        run_test(8'd200, 8'd150, 4'd1, "Test 2: SUB");
-        run_test(8'd0, 8'd1, 4'd1, "Test 2.1: SUB (borrow)");
-        run_test(8'd6, 8'd9, 4'd2, "Test 3: AND");
-        run_test(8'd6, 8'd9, 4'd3, "Test 4: OR");
-        run_test(8'd6, 8'd9, 4'd4, "Test 5: XOR");
-        run_test(8'd11, 8'd15, 4'd5, "Test 6: PASS A");
-        run_test(8'd11, 8'd15, 4'd6, "Test 7: PASS B");
-        run_test(8'd11, 8'd15, 4'd7, "Test 8: SHL A");
-        run_test(8'd128, 8'd0, 4'd7, "Test 8.1: SHL A (carry)");
-        run_test(8'd11, 8'd15, 4'd8, "Test 9: SHR A");
-        run_test(8'd1, 8'd0, 4'd8, "Test 9.1: SHR A (carry)");
-        run_test(8'd11, 8'd15, 4'd9, "Test 10: MOVE XA");
-        run_test(8'd11, 8'd15, 4'd10, "Test 11: MOVE AX");
-        run_test(8'd11, 8'd0, 4'd11, "Test 12: INC A");
-        run_test(8'd255, 8'd0, 4'd11, "Test 12.1: INC A");
-        run_test(8'd11, 8'd0, 4'd12, "Test 13: DEC A");
-        run_test(8'd0, 8'd0, 4'd12, "Test 13.1: DEC A");
+        run_test(8'd11, 8'd15, 5'd0, "Test 1: ADD");
+        run_test(8'd127, 8'd1, 5'd0, "Test 1.1: ADD (overflow)");
+        run_test(8'd255, 8'd1, 5'd0, "Test 1.2: ADD (carry)");
+        run_test(8'd200, 8'd150, 5'd1, "Test 2: SUB");
+        run_test(8'd0, 8'd1, 5'd1, "Test 2.1: SUB (borrow)");
+        run_test(8'd6, 8'd9, 5'd2, "Test 3: AND");
+        run_test(8'd6, 8'd9, 5'd3, "Test 4: OR");
+        run_test(8'd6, 8'd9, 5'd4, "Test 5: XOR");
+        run_test(8'd11, 8'd15, 5'd5, "Test 6: PASS A");
+        run_test(8'd11, 8'd15, 5'd6, "Test 7: PASS B");
+        run_test(8'd11, 8'd15, 5'd7, "Test 8: SHL A");
+        run_test(8'd128, 8'd0, 5'd7, "Test 8.1: SHL A (carry)");
+        run_test(8'd11, 8'd15, 5'd8, "Test 9: SHR A");
+        run_test(8'd1, 8'd0, 5'd8, "Test 9.1: SHR A (carry)");
+        run_test(8'd11, 8'd15, 5'd9, "Test 10: MOVE XA");
+        run_test(8'd11, 8'd15, 5'd10, "Test 11: MOVE AX");
+        run_test(8'd11, 8'd0, 5'd11, "Test 12: INC A");
+        run_test(8'd255, 8'd0, 5'd11, "Test 12.1: INC A");
+        run_test(8'd11, 8'd0, 5'd12, "Test 13: DEC A");
+        run_test(8'd0, 8'd0, 5'd12, "Test 13.1: DEC A");
+        run_test(8'd0, 8'd0, 5'd13, "Test 14: NOT A");
+        run_test(8'd5, 8'd0, 5'd14, "Test 15: NEG A");
+        run_test(8'd123, 8'd0, 5'd15, "Test 16: CLR A");
+        run_test(8'd10, 8'd30, 5'd16, "Test 17: MAX (B > A)");
+        run_test(8'd200, 8'd100, 5'd16, "Test 17.1: MAX (A > B)");
+        run_test(8'd10, 8'd30, 5'd17, "Test 18: MIN (A < B)");
+        run_test(8'd200, 8'd100, 5'd17, "Test 18.1: MIN (B < A)");
+        run_test(8'd133, 8'd0, 5'd18, "Test 19: ABS A (negative input)");
+
+
 
         // test multiple operations after another
         run_test_multiple_operations();
 
         // test manual mux output
-        run_test_mux_manual(8'd11, 8'd3, 4'd5, "Test MUX (with PASS A)");
+        run_test_mux_manual(8'd11, 8'd3, 5'd5, "Test MUX (with PASS A)");
 
         // test regfile
         run_test_regfile();
+
+        // test pc
+        run_test_pc_increment();
         
         $display("\n All tests completed");
         $finish;

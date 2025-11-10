@@ -14,7 +14,7 @@ module cpu_top (
 
     wire [7:0] reg_a;
     wire [7:0] reg_b;
-    wire [3:0] reg_op;
+    wire [4:0] reg_op;
     wire [2:0] mux_sel;
     wire strobe_io_done, io_fsm_write_a, io_fsm_write_x;
 
@@ -45,7 +45,7 @@ module cpu_top (
     );
 
     wire ctrl_write_enable_a, ctrl_write_enable_x;
-    wire [3:0] alu_op;
+    wire [4:0] alu_op;
     wire [7:0] alu_y;
     wire alu_z, alu_c, alu_v, alu_n;
 

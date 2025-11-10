@@ -3,7 +3,7 @@
 module cpu_alu (
     input wire[7:0] a_i,
     input wire[7:0] b_i,
-    input wire[3:0] operation_i,
+    input wire[4:0] operation_i,
     output reg[7:0] y_o,
     output reg z_o, // zero flag
     output reg c_o, // carry flag
@@ -48,7 +48,6 @@ module cpu_alu (
             `OP_PASS_B, `OP_MOVE_REG_AX: result = {1'b0, b_i}; // pass through B
             `OP_SHL_A: result = {a_i[7], a_i[6:0], 1'b0}; // left shift (LSB 0)
             `OP_SHR_A: result = {a_i[0], 1'b0, a_i[7:1]}; // right shift (MSB 0)
-            
             `OP_INC_REG_A : begin
                 result = {1'b0, a_i + 8'd1};
                 c_o = (a_i == 8'd255);
@@ -56,6 +55,17 @@ module cpu_alu (
             `OP_DEC_REG_A : begin
                 result = {1'b0, a_i - 8'd1};
                 c_o = (a_i == 8'd0);
+            end
+            `OP_NOT_A: result = {1'b0, ~a_i}; // negate a
+            `OP_NEG_A: result = {1'b0, -a_i}; // 2 complement
+            `OP_CLR_A: result = 9'd0; // clear a
+            `OP_MAX: result = {1'b0, (a_i > b_i) ? a_i : b_i}; // max
+            `OP_MIN: result = {1'b0, (a_i < b_i) ? a_i : b_i}; // min
+            `OP_ABS_A: begin // abs
+                if (a_i[7] == 1'b1)
+                    result = {1'b0, -a_i};
+                else
+                    result = {1'b0, a_i};
             end
             default: begin
                 result = 9'd0;

@@ -10,10 +10,10 @@ module cpu_ctrl_fsm (
     input wire c_i,
     input wire v_i,
     input wire n_i,
-    input wire [3:0] operation_i,
+    input wire [4:0] operation_i,
 
     output reg pc_inc_o,
-    output reg [3:0] alu_op_o,
+    output reg [4:0] alu_op_o,
     output reg write_enable_a_o,
     output reg write_enable_x_o
 );
@@ -46,7 +46,7 @@ module cpu_ctrl_fsm (
     always @(*) begin
         // default
         pc_inc_o = 1'b0;
-        alu_op_o = 4'b0;
+        alu_op_o = 5'b0;
         write_enable_a_o = 1'b0;
         write_enable_x_o = 1'b0;
         next_state = state;
@@ -61,9 +61,8 @@ module cpu_ctrl_fsm (
             ST_EXEC: begin
                 alu_op_o = operation_i;
                 case (operation_i)
-                    `OP_ADD, `OP_SUB, `OP_AND, `OP_OR, `OP_XOR,
-                    `OP_SHL_A, `OP_SHR_A,
-                    `OP_INC_REG_A, `OP_DEC_REG_A: begin
+                    `OP_ADD, `OP_SUB, `OP_AND, `OP_OR, `OP_XOR, `OP_SHL_A, `OP_SHR_A,
+                    `OP_INC_REG_A, `OP_DEC_REG_A, `OP_NOT_A, `OP_NEG_A, `OP_CLR_A, `OP_ABS_A, `OP_MAX, `OP_MIN: begin
                         write_enable_a_o = 1'b1;
                     end
                     `OP_PASS_A, `OP_PASS_B: begin
@@ -76,7 +75,7 @@ module cpu_ctrl_fsm (
                         write_enable_x_o = 1'b1;
                     end
                     default: begin
-                        alu_op_o = 4'd0;
+                        alu_op_o = 5'd0;
                     end
                 endcase
                 next_state = ST_FETCH;
