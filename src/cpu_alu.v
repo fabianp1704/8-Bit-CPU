@@ -10,6 +10,17 @@ module cpu_alu (
     output reg v_o, // overflow flag
     output reg n_o // negative flag
 );
+// Status flags:
+// z_o: Set if 8-bit result y_o equals 0.
+// c_o: 9-bit internal result[8], used for unsigned arithmetic.
+//      ADD  → carry-out of MSB.
+//      SUB  → borrow convention:
+//             A >= B → c_o = 0
+//             A <  B → c_o = 1
+//      INC/DEC explicitly set c_o for wrap-around cases.
+// v_o: Signed overflow flag (two`s complement).
+//      Only evaluated for ADD and SUB.
+// n_o: MSB of y_o (y_o[7]), indicates sign for signed interpretation.
 
     reg [8:0] result; // 9-bit for carry (addition or subtraction)
 
